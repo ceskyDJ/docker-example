@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  php:
+    build:
+      context: "./docker/php/"
+      args:
+        - VERSION=${PHP_VERSION}
+    networks:
+      - project
+      - db
+    volumes:
+      - ./public_html/:/var/www/html/
+
+  apache:
+    build: "./docker/apache/"
+    depends_on:
+      - php
+    networks:
+      - project
+    ports:
+      - "${IP}:80:80"
+    volumes:
+      - ./public_html/:/var/www/html/
+
+networks:
+  project:
+  db:
+    external:
+      name: main_db
